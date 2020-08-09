@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static "css/metro_all.min.css" %}">
+    <title>Departments dashboard</title>
+  </head>
+  <body>
+    <div class = "grid">
+    <div class = "row px-5 m-5 py-10 pt-5">
+      <div class="row w-100">
+        <div data-role="tile" data-size="wide" class="bg-white border bd-gray border-radius-4 mx-2 row p-5 ontrack">
+            <div class="row mx-auto" style="color:#2e2f2f;">Objetives on track</div>
+            <div class="row d-flex p-2">
+              <div id="donut_val" data-hole="0.9" data-radius="35" data-fill="#35af35" data-stroke="#b9eab9" data-color ="#2e2f2f" data-role="donut" data-value="{{objectives_on_track.on_track_ratio}}" class="cell-md-4"></div>
+              <div class="cell-md-8" style="color:#35af35;">
+                <div style="font-size: small;">{{objectives_on_track.on_track}}/{{objectives_on_track.total}} objectives</div>
+                <small class="text-light" style="font-size: small;color:#2e2f2f;">since {{objectives_on_track.date_since}}</small>
+              </div>
+            </div>
+        </div>
+        <div data-role="tile" data-size="wide" class="bg-white border bd-gray border-radius-4 mx-2 row p-5">
+            <div class="row mx-auto" style="color:#2e2f2f;">Objetives Recently Updated</div>
+            <div class="row d-flex p-2">
+              <div id="donut_val" data-hole="0.9" data-radius="35" data-fill="#35af35" data-stroke="#b9eab9" data-color ="#2e2f2f" data-role="donut" data-value="{{objectives_updated_recently.update_ratio}}" class="cell-md-4"></div>
+              <div class="cell-md-8" style="color:#35af35;">
+                <div style="font-size: small;">
+                  +{{objectives_updated_recently.change}}(%{{objectives_updated_recently.percentage_change}}) updates&nbsp;
+                  {% if objectives_updated_recently.direction == "up" %}
+                    <span style="font-size: smaller;" class="mif-arrow-up"></span>
+                  {% else %}
+                    <span style="font-size: smaller;" class="mif-arrow-down"></span>
+                  {% endif %}
+                </div>
+                <small class="text-light" style="font-size: small;color:#2e2f2f;">over past {{objectives_updated_recently.date_since}}</small>
+              </div>
+            </div>
+      </div>
+      <div id="percentile" class="row w-100 bg-white border bd-gray border-radius-4 my-2 p-5">
+        <div> Objetives on track <small class="text-light" style="font-size: x-small;">All Departments</small></div>
+        <div id="ontrack" class="row d-flex mx-2 row p-5 w-100">
+        </div>
+      </div>
+    </div>
+  </div>
+    <script src="{% static "js/metro.min.js" %}"></script>
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var colors = ["#73a9c3", "#81a260", "#9e6f6c"]
+        var departments = eval("{{departments|safe}}");
+        var index = 0, colors_len = colors.length
+        var on_track_div = ""
+        for (dept of departments){
+          on_track_div += `<a href="{% url 'teams' %}?department_name=${dept.name}">  \
+            <div style="background-color:${colors[index]}" data-role="tile"  data-size="wide" class="text-center"> \
+            <div data-role="popover" data-popover-text="<div>${dept.name}</div> \
+            <div>${dept.objectives_count} Objectives</div><div>${dept.users_count} Employees</div> \
+            <div>${dept.teams_count} Teams</div>" data-cls-popover="bg-dark fg-white text-small drop-shadow" \
+            class="w-100 h-100">${dept.name}</div></div></a>`
+          index = (index+1) % colors_len
+        }
+        $("#ontrack").append(on_track_div)
+      })
+    </script>
+  </body>
+</html>

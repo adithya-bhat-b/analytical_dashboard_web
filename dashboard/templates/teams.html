@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static "css/metro_all.min.css" %}">
+    <title>Teams</title>
+  </head>
+  <body>
+    <div class = "container-fluid">
+      <div class = "row px-5 m-5 py-10 border bd-gray border-radius-4 pt-5">
+        <div class="row w-100">
+          <h5>Objectives on Track</h5>
+          <ul class="breadcrumbs">
+              <li class="page-item"><a href="{% url 'departments' %}" class="page-link">All departments</a></li>
+              <li class="page-item"><a href="#" class="page-link">{{department}}</a></li>
+          </ul>
+        </div>
+        <div id="teams" class="row">       
+        </div>
+      </div>
+    </div>
+    <script src="{% static "js/metro.min.js" %}"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var teams = eval("{{teams|safe}}")
+        var data = ""
+        var colors = ["#889296", "#d88f8f", "#5795b3"]
+        var index = 0, colors_len = colors.length
+        for (team of teams){
+          data += `<div style="background-color:${colors[index]}" data-role="tile" data-size="wide"> \
+              <img class="icon border border-radius-half" data-email="a@b.com" \ 
+              data-role="gravatar" data-size="40" data-default="identicon"> \
+              <span class="branding-bar text-center">${team.team_leader}'s team</span></div>`
+          index = (index+1) % colors_len
+        }
+        $("#teams").append(data)
+      })
+    </script>
+  </body>
+</html>
